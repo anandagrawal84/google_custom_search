@@ -15,5 +15,11 @@ module GoogleCustomSearch
     def items
       @result["results"].collect { |result| SearchResultItem.new result }
     end
+
+    def range
+      starting_value = @result["cursor"]["pages"][current_page_index]["start"].to_i + 1
+      ending_value = starting_value + items.count - 1
+      starting_value..ending_value
+    end
   end
 end

@@ -15,6 +15,11 @@ describe GoogleCustomSearch::SearchResult do
     result.current_page_index.should == 3
   end
 
+  it "should return the range of results" do
+    result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
+    result.range.should == (25..32)
+  end
+
   describe "items" do
     it "should return the search result items" do
       result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
