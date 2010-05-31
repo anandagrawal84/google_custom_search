@@ -1,2 +1,2 @@
 # Include hook code here
-require 'google_custom_search'
+require File.join(File.dirname(__FILE__), "lib", "google_custom_search")
