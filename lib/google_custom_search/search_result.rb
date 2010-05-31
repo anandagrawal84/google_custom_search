@@ -9,7 +9,7 @@ module GoogleCustomSearch
     end
 
     def items
-      @result["results"]
+      @result["results"].collect { |result| SearchResultItem.new result }
     end
   end
 end

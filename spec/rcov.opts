@@ -1,0 +1,5 @@
+--exclude "spec,tasks"
+--rails
+--include-file "lib/google_custom_search"
+--text-report
+--sort coverage
