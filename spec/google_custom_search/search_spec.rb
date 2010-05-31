@@ -1,3 +1,4 @@
+require 'spec'
 require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 
 describe GoogleCustomSearch::Search do
@@ -9,15 +10,33 @@ describe GoogleCustomSearch::Search do
   describe "for" do
 
     it "should return the estimated results count for the given search" do
-      mock_uri = mock(URI)
-      mock_uri.should_receive(:read).and_return(MOCK_JSON.to_json)
-      URI.should_receive(:parse).with("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&oe=utf8&ie=utf8&source=uds&hl=en&rsz=large&cx=abcd&q=org").and_return(mock_uri)
+      mock_uri "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&oe=utf8&ie=utf8&source=uds&hl=en&cx=abcd&q=org&rsz=large&start=0", MOCK_JSON.to_json
       search = GoogleCustomSearch::Search.new
       results = search.for("org")
       results.estimated_count.should == 409
-
     end
 
   end
 
+  it "should return the estimated results count with small result set size" do
+    mock_uri "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&oe=utf8&ie=utf8&source=uds&hl=en&cx=abcd&q=org&rsz=small&start=0", MOCK_JSON.to_json
+    search = GoogleCustomSearch::Search.new
+    results = search.with_small_result_set.for("org")
+    results.estimated_count.should == 409
+  end
+
+  it "should return results on page with index 2" do
+    result = {"responseData"=>{"results"=>[{"GsearchResultClass"=>"GwebSearch", "title"=>"Tomorrow", "url"=>"http://www.localhost.site/tickets/calendar/weeklycalendar.aspx%3Fspan%3Dtomorrow", "cacheUrl"=>"http://www.google.com/search?q=cache:5z3Ckza8Od0J:www.localhost.site", "content"=>"abc", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/calendar/weeklycalendar.aspx?span=tomorrow", "titleNoFormatting"=>"Tomorrow - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Tour de Force - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/production.aspx%3FperformanceNumber%3D17337", "cacheUrl"=>"http://www.google.com/search?q=cache:BPpvrkGlI9sJ:www.localhost.site", "content"=>"sdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/production.aspx?performanceNumber=17337", "titleNoFormatting"=>"Tour de Force - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Shelly Garretts Beauty Shop - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/production.aspx%3FperformanceNumber%3D22699", "cacheUrl"=>"http://www.google.com/search?q=cache:-r4Vp2dw0I0J:www.localhost.site", "content"=>"asdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/production.aspx?performanceNumber=22699", "titleNoFormatting"=>"Shelly Garretts Beauty Shop - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"BUY - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/reserve.aspx%3FperformanceNumber%3D24411", "cacheUrl"=>"http://www.google.com/search?q=cache:ksiAw-D5ks0J:www.localhost.site", "content"=>"asdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/reserve.aspx?performanceNumber=24411", "titleNoFormatting"=>"BUY - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Buy a ticket - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/reserve.aspx%3FperformanceNumber%3D22215", "cacheUrl"=>"http://www.google.com/search?q=cache:bPw-3SSwy_0J:www.localhost.site", "content"=>"asdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/reserve.aspx?performanceNumber=22215", "titleNoFormatting"=>"Buy a ticket - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Heinz Hall - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/reserve.aspx%3FperformanceNumber%3D24471", "cacheUrl"=>"http://www.google.com/search?q=cache:LixRI1ZIT5oJ:www.localhost.site", "content"=>"asdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/reserve.aspx?performanceNumber=24471", "titleNoFormatting"=>"Heinz Hall - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Swan Lake - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/production.aspx%3FperformanceNumber%3D17459", "cacheUrl"=>"http://www.google.com/search?q=cache:WApAaZerNF4J:www.localhost.site", "content"=>"asdfasdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/production.aspx?performanceNumber=17459", "titleNoFormatting"=>"Swan Lake - Pittsburgh&#39;s Cultural District"}, {"GsearchResultClass"=>"GwebSearch", "title"=>"Jeff Kinney - Pittsburgh&#39;s Cultural District", "url"=>"http://www.localhost.site/tickets/tickets/production.aspx%3FperformanceNumber%3D20641", "cacheUrl"=>"http://www.google.com/search?q=cache:Vm8zKcGs0f4J:www.localhost.site", "content"=>"asdfasdf", "visibleUrl"=>"www.localhost.site", "unescapedUrl"=>"http://www.localhost.site/tickets/tickets/production.aspx?performanceNumber=20641", "titleNoFormatting"=>"Jeff Kinney - Pittsburgh&#39;s Cultural District"}], "cursor"=>{"estimatedResultCount"=>"409", "currentPageIndex"=>2, "moreResultsUrl"=>"http://www.google.com/cse?oe=utf8&ie=utf8&source=uds&cx=004905679161489350096%3Arymp5afccji&start=16&hl=en&q=org", "pages"=>[{"label"=>1, "start"=>"0"}, {"label"=>2, "start"=>"8"}, {"label"=>3, "start"=>"16"}, {"label"=>4, "start"=>"24"}, {"label"=>5, "start"=>"32"}, {"label"=>6, "start"=>"40"}, {"label"=>7, "start"=>"48"}, {"label"=>8, "start"=>"56"}]}, "context"=>{"title"=>"Cultural District Search Engine", "facets"=>[]}}, "responseDetails"=>nil, "responseStatus"=>200}
+    mock_uri "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&oe=utf8&ie=utf8&source=uds&hl=en&cx=abcd&q=org&rsz=large&start=16", result.to_json
+    search = GoogleCustomSearch::Search.new
+    results = search.with_page_index(2).for("org")
+    results.current_page_index.should == 2
+  end
+
+  private
+  def mock_uri url, result
+    mock_uri = mock(URI)
+    mock_uri.should_receive(:read).and_return(result)
+    URI.should_receive(:parse).with(url).and_return(mock_uri)
+  end
 end

@@ -1,3 +1,4 @@
+require 'spec'
 require File.expand_path("#{File.dirname(__FILE__)}/../spec_helper")
 
 describe GoogleCustomSearch::SearchResult do
@@ -9,6 +10,11 @@ describe GoogleCustomSearch::SearchResult do
     result.estimated_count.should == 409
   end
 
+  it "should return the index of current page" do
+    result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
+    result.current_page_index.should == 3
+  end
+
   describe "items" do
     it "should return the search result items" do
       result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
@@ -18,7 +24,7 @@ describe GoogleCustomSearch::SearchResult do
     it "should return the title of search item" do
       result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
       result.items.first.title.should == "Tile of the page"
-    end    
+    end
   end
 
 
