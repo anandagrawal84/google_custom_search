@@ -23,7 +23,7 @@ module GoogleCustomSearch
       uri = build_query_url(keyword)
       search_data = uri.read
       json_data = JSON.parse search_data
-      GoogleCustomSearch::SearchResult.new json_data["responseData"]
+      GoogleCustomSearch::SearchResult.new json_data
     end
 
     def with_small_result_set
