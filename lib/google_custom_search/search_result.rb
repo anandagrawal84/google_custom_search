@@ -17,7 +17,8 @@ module GoogleCustomSearch
     end
     
     def pages
-      @result["cursor"]["pages"].collect { |page| SearchPage.new page}
+      pages = @result["cursor"]["pages"] || []
+      pages.collect { |page| SearchPage.new page}
     end
 
     def range

@@ -16,6 +16,10 @@ describe GoogleCustomSearch::SearchResult do
                              "pages"=>[{"label"=>1, "start"=>"0"}, {"label"=>2, "start"=>"8"}, {"label"=>3, "start"=>"16"}, {"label"=>4, "start"=>"24"}, {"label"=>5, "start"=>"32"}, {"label"=>6, "start"=>"40"}, {"label"=>7, "start"=>"48"}, {"label"=>8, "start"=>"56"}]}, 
                   "context"=>{"title"=>"Cultural District Search Engine", "facets"=>[]}}
 
+  RESULTS_JSON_NO_RESULT = {"results"=>[],
+                  "cursor"=>{"estimatedResultCount"=>"409", "currentPageIndex"=>3},
+                  "context"=>{"title"=>"Cultural District Search Engine", "facets"=>[]}}
+
   it "should find the estimated count from the given search result json data" do
     result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
     result.estimated_count.should == 409
@@ -32,6 +36,11 @@ describe GoogleCustomSearch::SearchResult do
   end
 
   describe "pages" do
+    it "should return empty search result pages" do
+      result = GoogleCustomSearch::SearchResult.new RESULTS_JSON_NO_RESULT
+      result.pages.size.should == 0
+    end
+    
     it "should return the search result pages" do
       result = GoogleCustomSearch::SearchResult.new RESULTS_JSON
       result.pages.size.should == 8
