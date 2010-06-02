@@ -32,7 +32,7 @@ module GoogleCustomSearch
     end
 
     def with_page_index index
-      @page_index = index
+      @page_index = index - 1
       self
     end
 
